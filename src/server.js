@@ -75,18 +75,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000,
+    windowMs: 3 * 60 * 1000,
     max: 7,
     message: {
         success: false,
-        message: 'Terlalu banyak percobaan login. Silakan coba lagi dalam 15 menit.'
+        message: 'Terlalu banyak percobaan login. Silakan coba lagi dalam 3 menit.'
     },
     standardHeaders: true,
     legacyHeaders: false,
     handler: (req, res) => {
         res.status(429).json({
             success: false,
-            message: 'Terlalu banyak percobaan login. Silakan coba lagi dalam 15 menit.'
+            message: 'Terlalu banyak percobaan login. Silakan coba lagi dalam 3 menit.'
         });
     }
 });

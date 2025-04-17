@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login | DigitStream</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/x-icon" href="/img/favicon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <style>
+    .cyber-bg {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      background: linear-gradient(135deg, #0f0c29, #1a1a3a, #24243e);
+      overflow: hidden;
+    }
+    .cyber-grid {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: gridMove 80s linear infinite;
+    }
+    @keyframes gridMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 1000px 1000px; }
+    }
+    .cyber-pulse {
+      position: absolute;
+      width: 300vw;
+      height: 300vw;
+      background: radial-gradient(circle, rgba(100, 217, 254, 0.1) 0%, transparent 70%);
+      animation: pulse 20s linear infinite;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      opacity: 0;
+    }
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(0.1); opacity: 0.5; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+    }
+    .hexagon {
+      position: absolute;
+      width: 60px;
+      height: 34.64px;
+      background-color: rgba(100, 217, 254, 0.15);
+      margin: 17.32px 0;
+      border-left: 1px solid rgba(100, 217, 254, 0.3);
+      border-right: 1px solid rgba(100, 217, 254, 0.3);
+      animation: floatHex 25s linear infinite;
+    }
+    .hexagon:before, .hexagon:after {
+      content: "";
+      position: absolute;
+      width: 0;
+      border-left: 30px solid transparent;
+      border-right: 30px solid transparent;
+    }
+    .hexagon:before {
+      bottom: 100%;
+      border-bottom: 17.32px solid rgba(100, 217, 254, 0.15);
+    }
+    .hexagon:after {
+      top: 100%;
+      border-top: 17.32px solid rgba(100, 217, 254, 0.15);
+    }
+    @keyframes floatHex {
+      0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+      10%, 90% { opacity: 0.7; }
+      100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+    }
+    .form-glow {
+      box-shadow: 0 0 20px rgba(100, 217, 254, 0.3);
+    }
+    .access-link {
+      color: rgba(100, 217, 254, 0.8);
+      transition: all 0.3s ease;
+    }
+    .access-link:hover {
+      color: rgba(100, 217, 254, 1);
+      text-shadow: 0 0 10px rgba(100, 217, 254, 0.5);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex justify-center items-center overflow-x-hidden overflow-y-auto">
+  <div class="cyber-bg">
+    <div class="cyber-grid"></div>
+    <div class="cyber-pulse" style="animation-delay: 0s"></div>
+    <div class="cyber-pulse" style="animation-delay: 5s"></div>
+    <div class="cyber-pulse" style="animation-delay: 10s"></div>
+    <div class="cyber-pulse" style="animation-delay: 15s"></div>
+  </div>
+
+  <div id="hexagons"></div>
+
+  <div class="flex flex-col items-center relative pb-16 z-10 w-full">
+    <div class="w-full max-w-sm px-6 sm:px-8 py-10 bg-gray-900/60 rounded-2xl backdrop-blur-lg border border-gray-700/50 form-glow mx-4 sm:mx-auto">
+      <div class="text-white text-center mb-8">
+        <img src="/img/logo.svg" alt="Stream Flow Logo" class="h-9 w-auto mx-auto mb-4" />
+        <h1 class="text-2xl font-bold text-white">Welcome Back</h1>
+        <p class="text-gray-400 mt-1">Sign in to continue</p>
+      </div>
+      <form id="loginForm" action="/login" method="POST" class="space-y-4">
+        <div class="flex items-center p-3 bg-gray-800/50 rounded-lg gap-3 border border-gray-700/50">
+          <i class="fa-solid fa-user text-gray-400 ml-1"></i>
+          <input type="text" name="username" id="username" placeholder="Username" required 
+                 class="w-full bg-transparent text-white placeholder-gray-400 focus:outline-none" />
+        </div>
+        <div class="flex items-center p-3 bg-gray-800/50 rounded-lg gap-3 border border-gray-700/50">
+          <i class="fa-solid fa-lock text-gray-400 ml-1"></i>
+          <input type="password" name="password" id="password" placeholder="Password" required 
+                 class="w-full bg-transparent text-white placeholder-gray-400 focus:outline-none" />
+        </div>
+        <button type="submit" class="w-full px-4 py-3 rounded-lg bg-blue-500/90 text-white font-medium 
+                hover:bg-blue-500 focus:outline-none active:transform active:scale-95 transition-all
+                border border-blue-400/50 backdrop-blur-sm shadow-lg shadow-blue-500/20">
+          Sign In
+        </button>
+        <p class="text-center text-gray-400 mt-4">
+          Lupa Password <span onclick="window.open('././reset.html', '_blank')" class="access-link cursor-pointer">Dapatkan di sini</span>
+        </p>
+        <p class="text-center text-gray-400 mt-4">
+          Belum punya akses? <span onclick="window.open('https://digitstore.biz.id', '_blank')" class="access-link">Dapatkan di sini</a>
+        </p>
+        <p class="text-center text-gray-500 mt-2">Rezz | Dev</p>
+      </form>
+    </div>
+    <div id="errorMessage"
+      class="hidden mt-4 p-3 border border-red-400/50 bg-red-900/30 text-red-200 rounded-xl absolute bottom-0 left-1/2 -translate-x-1/2 w-[90%] sm:w-[350px] backdrop-blur-sm">
+    </div>
+  </div>
+
+  <script>
+    function createHexagons() {
+      const container = document.getElementById('hexagons');
+      const hexagonCount = 8;
+      for (let i = 0; i < hexagonCount; i++) {
+        const hexagon = document.createElement('div');
+        hexagon.classList.add('hexagon');
+        hexagon.style.left = `${Math.random() * 100}%`;
+        hexagon.style.top = `${Math.random() * 100 + 100}%`;
+        const duration = Math.random() * 20 + 20;
+        hexagon.style.animationDuration = `${duration}s`;
+        hexagon.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(hexagon);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      createHexagons();
+      const loginForm = document.getElementById('loginForm');
+      const errorMessage = document.getElementById('errorMessage');
+
+      loginForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        errorMessage.classList.add('hidden');
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        try {
+          const getSalt = await fetch(`/get-salt/${username}`, { method: 'GET', credentials: 'include' });
+          if (getSalt.status === 429) {
+            const rateLimitError = await getSalt.json();
+            errorMessage.textContent = rateLimitError.message;
+            errorMessage.classList.remove('hidden');
+            return;
+          }
+
+          const saltResult = await getSalt.json();
+          if (!saltResult.success) {
+            errorMessage.textContent = 'Username atau password salah';
+            errorMessage.classList.remove('hidden');
+            return;
+          }
+
+          const hashedPassword = CryptoJS.SHA256(password + saltResult.salt).toString();
+          const loginResponse = await fetch('/login', {
+            method: 'POST',
+            body: JSON.stringify({ username, hashedPassword }),
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include'
+          });
+
+          if (loginResponse.status === 429) {
+            const rateLimitError = await loginResponse.json();
+            errorMessage.textContent = rateLimitError.message;
+            errorMessage.classList.remove('hidden');
+            return;
+          }
+
+          const result = await loginResponse.json();
+          if (result.success) {
+            window.location.href = '/dashboard';
+          } else {
+            errorMessage.textContent = result.message || 'Username atau password salah';
+            errorMessage.classList.remove('hidden');
+          }
+        } catch (error) {
+          console.error('Login error:', error);
+          errorMessage.textContent = 'Terjadi kesalahan koneksi';
+          errorMessage.classList.remove('hidden');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

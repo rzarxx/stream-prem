@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup | DigitStream</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" type="image/x-icon" href="/img/favicon.svg">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <style>
+    .cyber-bg {position: fixed;top: 0;left: 0;width: 100%;height: 100%;z-index: 0;background: linear-gradient(135deg, #0f0c29, #1a1a3a, #24243e);overflow: hidden;}
+    .cyber-grid {position: absolute;top: 0;left: 0;width: 100%;height: 100%;background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);background-size: 40px 40px;animation: gridMove 80s linear infinite;}
+    @keyframes gridMove {0% {background-position: 0 0;}100% {background-position: 1000px 1000px;}}
+    .cyber-pulse {position: absolute;width: 300vw;height: 300vw;background: radial-gradient(circle, rgba(100, 217, 254, 0.1) 0%, transparent 70%);animation: pulse 20s linear infinite;top: 50%;left: 50%;transform: translate(-50%, -50%);opacity: 0;}
+    @keyframes pulse {0% {transform: translate(-50%, -50%) scale(0.1);opacity: 0.5;}100% {transform: translate(-50%, -50%) scale(1);opacity: 0;}}
+    .hexagon {position: absolute;width: 60px;height: 34.64px;background-color: rgba(100, 217, 254, 0.15);margin: 17.32px 0;border-left: 1px solid rgba(100, 217, 254, 0.3);border-right: 1px solid rgba(100, 217, 254, 0.3);animation: floatHex 25s linear infinite;}
+    .hexagon:before,.hexagon:after {content: "";position: absolute;width: 0;border-left: 30px solid transparent;border-right: 30px solid transparent;}
+    .hexagon:before {bottom: 100%;border-bottom: 17.32px solid rgba(100, 217, 254, 0.15);}
+    .hexagon:after {top: 100%;border-top: 17.32px solid rgba(100, 217, 254, 0.15);}
+    @keyframes floatHex {0% {transform: translateY(0) rotate(0deg);opacity: 0;}10%,90% {opacity: 0.7;}100% {transform: translateY(-100vh) rotate(360deg);opacity: 0;}}
+    .form-glow {box-shadow: 0 0 20px rgba(100, 217, 254, 0.3);}
+    .access-link {color: rgba(100, 217, 254, 0.8);transition: all 0.3s ease;}
+    .access-link:hover {color: rgba(100, 217, 254, 1);text-shadow: 0 0 10px rgba(100, 217, 254, 0.5);}
+    .toggle-password {cursor: pointer;position: absolute;right: 1rem;top: 50%;transform: translateY(-50%);color: #ccc;}
+  </style>
+</head>
+<body class="min-h-screen flex justify-center items-center overflow-hidden text-white">
+  <div class="cyber-bg">
+    <div class="cyber-grid"></div>
+    <div class="cyber-pulse" style="animation-delay: 0s"></div>
+    <div class="cyber-pulse" style="animation-delay: 5s"></div>
+    <div class="cyber-pulse" style="animation-delay: 10s"></div>
+    <div class="cyber-pulse" style="animation-delay: 15s"></div>
+  </div>
+  <div id="hexagons"></div>
+  <div class="flex flex-col items-center relative pb-16 z-10 px-4 w-full max-w-md">
+    <h2 class="text-4xl font-medium mb-8 text-white text-center">Setup Akun</h2>
+    <div class="w-full p-8 rounded-2xl shadow-2xl bg-gray-900/60 backdrop-blur-lg border border-gray-700/50 form-glow">
+      <form id="setupForm" enctype="multipart/form-data" class="space-y-2">
+        <div class="flex flex-col items-center mb-8">
+          <div class="relative">
+            <label for="avatar" class="block w-32 h-32 rounded-full cursor-pointer">
+              <div id="photoPreview" class="w-32 h-32 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden">
+                <i class="fas fa-camera text-gray-400 text-3xl"></i>
+              </div>
+              <div class="absolute top-0 left-0 w-32 h-32 rounded-full flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity bg-black bg-opacity-40">
+                <i class="fas fa-camera text-white text-2xl"></i>
+              </div>
+            </label>
+            <input type="file" id="avatar" name="avatar" accept=".jpg" class="hidden">
+          </div>
+          <label for="avatar" class="text-white text-sm mt-2 cursor-pointer hover:text-blue-300 transition-colors">Unggah Foto Profil</label>
+        </div>
+        <div class="space-y-3 pb-1">
+          <div class="relative">
+            <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input type="text" id="username" name="username" placeholder="Username" class="w-full px-4 pl-10 py-3 rounded-lg bg-white/10 text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+          </div>
+          <hr class="border-gray-600">
+          <div class="relative">
+            <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input type="password" id="password" name="password" placeholder="Password" class="w-full px-4 pl-10 py-3 rounded-lg bg-white/10 text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <i class="fas fa-eye toggle-password" data-target="password"></i>
+          </div>
+          <div class="relative">
+            <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Konfirmasi password" class="w-full px-4 pl-10 py-3 rounded-lg bg-white/10 text-white placeholder-gray-400 border border-white/20 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <i class="fas fa-eye toggle-password" data-target="confirmPassword"></i>
+          </div>
+        </div>
+        <hr class="border-gray-600 pt-1">
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg shadow-lg shadow-blue-500/20 focus:ring-2 focus:ring-blue-500 transition-all">Buat Akun</button>
+        <div id="setupMessage" class="text-center text-red-500 mt-2"></div>
+        <p class="text-center text-gray-500 mt-2">Rezz | Dev</p>
+
+      </form>
+    </div>
+  </div>
+  <script>
+    function createHexagons() {
+      const container = document.getElementById('hexagons');
+      const hexagonCount = 8;
+      for (let i = 0; i < hexagonCount; i++) {
+        const hexagon = document.createElement('div');
+        hexagon.classList.add('hexagon');
+        hexagon.style.left = `${Math.random() * 100}%`;
+        hexagon.style.top = `${Math.random() * 100 + 100}%`;
+        hexagon.style.animationDuration = `${Math.random() * 20 + 20}s`;
+        hexagon.style.animationDelay = `${Math.random() * 5}s`;
+        container.appendChild(hexagon);
+      }
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      createHexagons();
+      const avatarInput = document.getElementById('avatar');
+      const photoPreview = document.getElementById('photoPreview');
+      const messageDiv = document.getElementById('setupMessage');
+
+      avatarInput.addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        messageDiv.textContent = '';
+        if (file) {
+          const fileName = file.name.toLowerCase();
+          if (!fileName.endsWith('.jpg')) {
+            messageDiv.textContent = 'Harap upload file format .JPG';
+            avatarInput.value = '';
+            photoPreview.innerHTML = '<i class="fas fa-camera text-gray-400 text-3xl"></i>';
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            photoPreview.innerHTML = `<img src="${e.target.result}" class="w-full h-full object-cover">`;
+          }
+          reader.readAsDataURL(file);
+        }
+      });
+
+      document.querySelectorAll('.toggle-password').forEach(icon => {
+        icon.addEventListener('click', () => {
+          const targetId = icon.getAttribute('data-target');
+          const input = document.getElementById(targetId);
+          if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+          } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+          }
+        });
+      });
+
+      function validatePassword(password) {
+        if (password.length < 8) {
+          return 'Password harus minimal 8 karakter';
+        }
+        return '';
+      }
+
+      document.getElementById('password').addEventListener('input', function(e) {
+        const errorMessage = validatePassword(e.target.value);
+        messageDiv.textContent = errorMessage;
+      });
+
+      function generateSalt() {
+        return CryptoJS.lib.WordArray.random(16).toString();
+      }
+
+      function hashPassword(password, salt) {
+        return CryptoJS.SHA256(password + salt).toString();
+      }
+
+      document.getElementById('setupForm').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        messageDiv.textContent = '';
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
+        const passwordError = validatePassword(password);
+        if (passwordError) {
+          messageDiv.textContent = passwordError;
+          return;
+        }
+        if (password !== confirmPassword) {
+          messageDiv.textContent = 'Password tidak sama';
+          return;
+        }
+        const salt = generateSalt();
+        const hashedPassword = hashPassword(password, salt);
+        const formData = new FormData(event.target);
+        formData.delete('password');
+        formData.delete('confirmPassword');
+        formData.append('hashedPassword', hashedPassword);
+        formData.append('salt', salt);
+        try {
+          const response = await fetch('/setup', {
+            method: 'POST',
+            body: formData,
+            credentials: 'include'
+          });
+          if (!response.ok) {
+            const data = await response.json();
+            messageDiv.textContent = data.message;
+          } else {
+            window.location.href = '/dashboard';
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          messageDiv.textContent = 'Terjadi kesalahan';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
